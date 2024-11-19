@@ -1,0 +1,54 @@
+import requests
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+import time
+
+
+chrome_driver_path = "D:/CFT Driver/chromedriver-win64/chromedriver.exe"
+chrome_binary_path = "D:/CFT Driver/chrome-win64/chrome.exe"
+
+
+chrome_options = Options()
+chrome_options.binary_location = chrome_binary_path
+
+
+service = Service(chrome_driver_path)
+driver = webdriver.Chrome(service=service, options=chrome_options)
+
+
+def otp_validation_test():
+
+    otp_api_url = "https://remitory.com/api/get-otp"
+    otp_response = requests.get(otp_api_url, params={"email": "testuser@gmail.com"})
+
+    if otp_response.status_code == 200:
+        otp = otp_response.json().get('otp')
+
+
+        driver.get("https://remitory.com/verify-otp")
+        time.sleep(3)
+
+        otp_input = driver.find_element(By.ID, "otpField")
+        otp_input.send_keys(otp)
+
+
+        verify_button = driver.find_element(By.ID, "verifyOtpButton")
+        verify_button.click()
+
+        time.sleep(3)
+
+        success_message = driver.find_element(By.XPATH, "//div[@id='otpSuccessMessage']")
+        assert success_message.text == "OTP verified successfully"
+
+    else:
+        print("Failed to retrieve OTP")
+
+
+try:
+    otp_validation_test()
+    print("OTP Validation Test Passed")
+except Exception as e:
+    print(f"OTP Validation Test Failed: {str(e)}")
+
+driver.quit()

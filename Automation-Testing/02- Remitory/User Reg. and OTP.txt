@@ -1,0 +1,66 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+import time
+
+chrome_driver_path = "D:/CFT Driver/chromedriver-win64/chromedriver.exe"
+chrome_binary_path = "D:/CFT Driver/chrome-win64/chrome.exe"
+
+chrome_options = Options()
+chrome_options.binary_location = chrome_binary_path
+
+
+service = Service(chrome_driver_path)
+driver = webdriver.Chrome(service=service, options=chrome_options)
+
+def register_user():
+ 
+    driver.get("https://remitory.com/")
+    time.sleep(3)  
+     login_button = driver.find_element(By.LINK_TEXT, "Sign In")
+    login_button.click()
+    time.sleep(2)
+
+ 
+    register_button = driver.find_element(By.LINK_TEXT, "Register")
+    register_button.click()
+    time.sleep(2)
+
+ 
+    first_name = driver.find_element(By.ID, "firstName")
+    first_name.send_keys("TestUser")
+
+    last_name = driver.find_element(By.ID, "lastName")
+    last_name.send_keys("UserLastName")
+
+    email = driver.find_element(By.ID, "email")
+    email.send_keys("testuser@example.com")
+
+    phone_number = driver.find_element(By.ID, "phoneNumber")
+    phone_number.send_keys("9876543210")
+
+     captcha_checkbox = driver.find_element(By.ID, "captcha")
+    captcha_checkbox.click()
+
+     submit_button = driver.find_element(By.ID, "registerSubmit")
+    submit_button.click()
+    time.sleep(3)  
+
+def verify_otp():
+    otp_field = driver.find_element(By.ID, "otp")
+    otp_field.send_keys("123456")  
+
+
+    verify_button = driver.find_element(By.ID, "verifyOtpSubmit")
+    verify_button.click()
+    time.sleep(2)
+
+try:
+    register_user()
+    verify_otp()
+    print("Test Passed: User registration and OTP validation")
+except Exception as e:
+    print(f"Test Failed: {str(e)}")
+
+driver.quit()

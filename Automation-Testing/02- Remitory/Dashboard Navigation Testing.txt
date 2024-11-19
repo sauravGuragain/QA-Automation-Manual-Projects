@@ -1,0 +1,45 @@
+def dashboard_navigation_test():
+    driver.get("https://remitory.com/")
+    time.sleep(3)
+
+    login_button = driver.find_element(By.LINK_TEXT, "Sign In")
+    login_button.click()
+    time.sleep(2)
+
+    
+    email_input = driver.find_element(By.ID, "email")
+    email_input.send_keys("testuser@gmail.com")
+
+    password_input = driver.find_element(By.ID, "password")
+    password_input.send_keys("password123")
+
+    
+    submit_button = driver.find_element(By.ID, "loginSubmit")
+    submit_button.click()
+    time.sleep(5)
+
+    
+    dashboard_heading = driver.find_element(By.XPATH, "//h1[contains(text(),'Dashboard')]")
+    assert dashboard_heading.text == "Dashboard"
+
+    
+    driver.find_element(By.LINK_TEXT, "Shared Filespace").click()
+    time.sleep(2)
+
+    driver.find_element(By.LINK_TEXT, "Real-Time Communication").click()
+    time.sleep(2)
+
+    driver.find_element(By.LINK_TEXT, "Client Communication").click()
+    time.sleep(2)
+
+    
+    final_section_heading = driver.find_element(By.XPATH, "//h1[contains(text(),'Client Communication')]")
+    assert final_section_heading.text == "Client Communication"
+
+try:
+    dashboard_navigation_test()
+    print("Dashboard Navigation Test Passed")
+except Exception as e:
+    print(f"Dashboard Navigation Test Failed: {str(e)}")
+
+driver.quit()

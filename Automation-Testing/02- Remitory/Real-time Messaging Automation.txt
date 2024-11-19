@@ -1,0 +1,43 @@
+def real_time_messaging_test():
+  
+    driver.get("https://remitory.com/")
+    time.sleep(3)
+
+    login_button = driver.find_element(By.LINK_TEXT, "Sign In")
+    login_button.click()
+    time.sleep(2)
+
+   
+    email_input = driver.find_element(By.ID, "email")
+    email_input.send_keys("user1@gmail.com")
+    
+    password_input = driver.find_element(By.ID, "password")
+    password_input.send_keys("password123")
+
+    
+    submit_button = driver.find_element(By.ID, "loginSubmit")
+    submit_button.click()
+    time.sleep(5)
+
+        driver.find_element(By.LINK_TEXT, "Real-Time Communication").click()
+    time.sleep(2)
+
+    
+    message_input = driver.find_element(By.ID, "messageInput")
+    message_input.send_keys("Hello User 2!")
+    
+    send_button = driver.find_element(By.ID, "sendMessageButton")
+    send_button.click()
+    time.sleep(2)
+
+    
+    sent_message = driver.find_element(By.XPATH, "//div[@class='message' and contains(text(),'Hello User 2!')]")
+    assert sent_message.text == "Hello User 2!"
+
+try:
+    real_time_messaging_test()
+    print("Real-Time Messaging Test Passed")
+except Exception as e:
+    print(f"Real-Time Messaging Test Failed: {str(e)}")
+
+driver.quit()
