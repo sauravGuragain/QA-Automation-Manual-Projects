@@ -1,0 +1,36 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+def test_login_logout(user_type):
+    chrome_driver_path = "D:/CFT Driver/chromedriver-win64/chromedriver.exe"
+    chrome_binary_path = "D:/CFT Driver/chrome-win64/chrome.exe"
+    
+    chrome_options = Options()
+    chrome_options.binary_location = chrome_binary_path
+    
+    service = Service(chrome_driver_path)
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+    
+    driver.get('https://staging.sipaluweb.com/login')
+
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'username')))
+    
+
+    driver.find_element(By.ID, 'username').send_keys('testuser')
+    driver.find_element(By.ID, 'password').send_keys('securepassword')
+    driver.find_element(By.ID, 'login_btn').click()
+
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'profile-section')))
+    assert driver.find_element(By.ID, 'profile-section') is not None, "Login failed!"
+
+    driver.find_element(By.ID, 'logout_btn').click()
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'login_btn')))
+    assert driver.find_element(By.ID, 'login_btn') is not None, "Logout failed!"
+
+    driver.quit()
+
+test_login_logout('individual')

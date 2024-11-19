@@ -1,0 +1,40 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+def test_user_registration(user_type):
+    chrome_driver_path = "D:/CFT Driver/chromedriver-win64/chromedriver.exe"
+    chrome_binary_path = "D:/CFT Driver/chrome-win64/chrome.exe"
+    
+    chrome_options = Options()
+    chrome_options.binary_location = chrome_binary_path
+    
+    service = Service(chrome_driver_path)
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver.get('https://staging.sipaluweb.com/register')
+
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'username')))
+    
+    driver.find_element(By.ID, 'username').send_keys('testuser')
+    driver.find_element(By.ID, 'email').send_keys('testuser@example.com')
+    driver.find_element(By.ID, 'password').send_keys('123456')
+    driver.find_element(By.ID, 'confirm_password').send_keys('123456')
+
+    if user_type == 'professional':
+        driver.find_element(By.ID, 'professional_checkbox').click()
+        driver.find_element(By.ID, 'experience').send_keys('5 years experience in plumbing')
+        driver.find_element(By.ID, 'hourly_rate').send_keys('50')
+    
+    driver.find_element(By.ID, 'register_btn').click()
+
+    success_msg = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, 'success_message'))
+    )
+    assert "Registration successful" in success_msg.text, "Registration failed!"
+    
+    driver.quit()
+test_user_registration('individual')
+test_user_registration('professional')
